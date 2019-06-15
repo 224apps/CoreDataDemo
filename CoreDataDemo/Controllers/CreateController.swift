@@ -91,32 +91,20 @@ class CreateController: UIViewController {
     }
     
     @objc fileprivate func handleSave(){
-        //        dismiss(animated: true) {
-        //
-        //            let company = Company(name: name, founded: Date())
-        //            self.delegate?.didAddCompany(company: company)
-        //        }
-        
-        
         //Initialization of coredatastack
-        
-        let persistentContainer = NSPersistentContainer(name: "CoreDataDemo")
-        persistentContainer.loadPersistentStores { (storeDesc, error) in
-            if let err = error {
-                print("Can't load the persistent store: \(err)")
-            }
-            let context = persistentContainer.viewContext
-            
-            guard let name = self.nameTextField.text else { return }
+        guard let name = self.nameTextField.text else { return }
+           let context = CoreDataManager.shared.persistentContainer.viewContext
             let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
             company.setValue(name, forKey: "name")
             //save the context
             do {
                 try context.save()
+                self.dismiss(animated: true, completion: {
+                    self.delegate?.didAddCompany(company: company as! Company)
+                })
             } catch {
                 print("Error. Failed to save company with error: \(error)")
             }
         }
-    }
     
 }

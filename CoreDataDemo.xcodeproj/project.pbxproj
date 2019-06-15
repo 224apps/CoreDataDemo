@@ -18,6 +18,7 @@
 		0E38BA8422B42CA500D947D1 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E38BA8322B42CA500D947D1 /* Company.swift */; };
 		0E38BA8822B42F5900D947D1 /* CreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E38BA8722B42F5900D947D1 /* CreateController.swift */; };
 		0E38BA9E22B57FB300D947D1 /* CoreDataDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0E38BA9C22B57FB300D947D1 /* CoreDataDemo.xcdatamodeld */; };
+		0E38BAA122B58FEF00D947D1 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E38BAA022B58FEF00D947D1 /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		0E38BA8322B42CA500D947D1 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		0E38BA8722B42F5900D947D1 /* CreateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateController.swift; sourceTree = "<group>"; };
 		0E38BA9D22B57FB300D947D1 /* CoreDataDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataDemo.xcdatamodel; sourceTree = "<group>"; };
+		0E38BAA022B58FEF00D947D1 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				0E38BA6022B4159B00D947D1 /* AppDelegate.swift */,
-				0E38BA9C22B57FB300D947D1 /* CoreDataDemo.xcdatamodeld */,
+				0E38BA9F22B58FD800D947D1 /* CoreDataStack */,
 				0E38BA8222B42C9C00D947D1 /* Models */,
 				0E38BA7422B4233A00D947D1 /* Extensions */,
 				0E38BA8522B42F1300D947D1 /* Controllers */,
@@ -112,6 +114,15 @@
 				0E38BA7222B4223600D947D1 /* CompanyCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		0E38BA9F22B58FD800D947D1 /* CoreDataStack */ = {
+			isa = PBXGroup;
+			children = (
+				0E38BA9C22B57FB300D947D1 /* CoreDataDemo.xcdatamodeld */,
+				0E38BAA022B58FEF00D947D1 /* CoreDataManager.swift */,
+			);
+			path = CoreDataStack;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,6 +202,7 @@
 				0E38BA7322B4223600D947D1 /* CompanyCell.swift in Sources */,
 				0E38BA6122B4159B00D947D1 /* AppDelegate.swift in Sources */,
 				0E38BA7622B4234700D947D1 /* Extensions.swift in Sources */,
+				0E38BAA122B58FEF00D947D1 /* CoreDataManager.swift in Sources */,
 				0E38BA8822B42F5900D947D1 /* CreateController.swift in Sources */,
 				0E38BA8422B42CA500D947D1 /* Company.swift in Sources */,
 			);
