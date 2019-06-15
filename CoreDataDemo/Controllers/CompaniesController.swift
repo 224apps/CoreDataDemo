@@ -58,8 +58,7 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         let createNavController = CustomNavigationController(rootViewController: createController)
         present(createNavController, animated: true, completion: nil)
     }
-    
-    
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = UIView()
         header.backgroundColor = .lightBlue
@@ -78,5 +77,25 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         cell.companyLabel.text = company.name
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction =  UITableViewRowAction(style: .default, title: "Delete") { (_, indexPath) in
+             let company = self.companies[indexPath.item]
+             self.companies.remove(at: indexPath.item)
+             self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            let context = CoreDataManager.shared.persistentContainer.viewContext
+             context.delete(company)
+        }
+        
+        let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (action, indexPath) in
+            //action.perform(#selector(handleEdit))
+            print("Editing companies..")
+        }
+        
+
+         return  [editAction, deleteAction]
+    }
+    
+ 
 }
 
