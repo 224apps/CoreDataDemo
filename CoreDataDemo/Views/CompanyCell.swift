@@ -9,11 +9,12 @@
 import UIKit
 
 class CompanyCell: UITableViewCell {
-    
+
     
     let companyLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
+        label.font  = UIFont.boldSystemFont(ofSize: 16)
         return label
     }()
     
