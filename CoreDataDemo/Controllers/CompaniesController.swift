@@ -11,11 +11,6 @@ import CoreData
 
 class CompaniesController: UITableViewController, CreateCompanyControllerDelegate {
     
-    func didAddCompany(company: Company) {
-        companies.append(company)
-        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
-        tableView.insertRows(at: [newIndexPath], with: .automatic)
-    }
     
     
     let CellID = "CompaniesControllerCellID"
@@ -37,20 +32,35 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         fetchCompanies()
         
     }
+    
+    //MARK: - Protocol Delegates
+    
+    func didAddCompany(company: Company) {
+        companies.append(company)
+        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
+        tableView.insertRows(at: [newIndexPath], with: .automatic)
+    }
+    
+    func didEditCompany(company: Company) {
+        let row = companies.index(of: company)
+        let reloadIndexPath = IndexPath(row: row!, section: 0)
+        self.tableView.reloadRows(at: [reloadIndexPath], with: .right)
+    }
+    
     //MARK: - Custom Functions.
     
     fileprivate  func fetchCompanies(){
-            let context = CoreDataManager.shared.persistentContainer.viewContext
-            let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
-            do{
-                let companies = try context.fetch(fetchRequest)
-                self.companies = companies
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }catch let fetchError {
-                fatalError("Can't fetch the data: \(fetchError)")
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
+        do{
+            let companies = try context.fetch(fetchRequest)
+            self.companies = companies
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
             }
+        }catch let fetchError {
+            fatalError("Can't fetch the data: \(fetchError)")
+        }
     }
     @objc fileprivate func handleAdd(){
         let createController = CreateController()
@@ -58,7 +68,7 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
         let createNavController = CustomNavigationController(rootViewController: createController)
         present(createNavController, animated: true, completion: nil)
     }
-
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = UIView()
         header.backgroundColor = .lightBlue
@@ -74,28 +84,41 @@ class CompaniesController: UITableViewController, CreateCompanyControllerDelegat
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CellID, for: indexPath) as! CompanyCell
         let company = companies[indexPath.item]
-        cell.companyLabel.text = company.name
+        
+        if let name = company.name, let founded = company.founded {
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MM dd, yyyy"
+            let dateFormattedString = dateFormatter.string(from: founded)
+            let dateString = "\(name),- Founded:\( dateFormattedString)"
+            cell.companyLabel.text = dateString
+        }
+        
+        
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction =  UITableViewRowAction(style: .default, title: "Delete") { (_, indexPath) in
-             let company = self.companies[indexPath.item]
-             self.companies.remove(at: indexPath.item)
-             self.tableView.deleteRows(at: [indexPath], with: .automatic)
-            let context = CoreDataManager.shared.persistentContainer.viewContext
-             context.delete(company)
-        }
-        
-        let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (action, indexPath) in
-            //action.perform(#selector(handleEdit))
-            print("Editing companies..")
-        }
-        
-
-         return  [editAction, deleteAction]
+        let deleteAction =  UITableViewRowAction(style: .default, title: "Delete", handler:deleteActionHandler)
+        deleteAction.backgroundColor = .lightRed
+        let editAction = UITableViewRowAction(style: .normal, title: "Edit", handler: editActionHandler)
+        editAction.backgroundColor = .darkblue
+        return  [editAction, deleteAction]
     }
     
- 
+    
+    private func deleteActionHandler(_  action: UITableViewRowAction,_ indexPath: IndexPath){
+        let company = self.companies[indexPath.item]
+        self.companies.remove(at: indexPath.item)
+        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        context.delete(company)
+    }
+    
+    private func editActionHandler(_ action: UITableViewRowAction, _ ndexPath: IndexPath){
+        let editCompanyNavController = CustomNavigationController(rootViewController:  CreateController())
+        present(editCompanyNavController, animated: true, completion: nil)
+    }
 }
 
