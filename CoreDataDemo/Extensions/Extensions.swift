@@ -8,6 +8,25 @@
 
 import UIKit
 
+
+
+//MARK: - Custom Navigation.
+
+class CustomNavigationController: UINavigationController {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+}
+
+extension UINavigationController {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+         return .lightContent
+    }
+}
+
+
+
+
 //MARK: - UIColor
 
 extension UIColor {

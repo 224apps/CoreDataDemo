@@ -9,6 +9,8 @@
 import UIKit
 import CoreData
 
+
+
 //Create a custom Delegation
 protocol CreateCompanyControllerDelegate {
     func didAddCompany(company: Company)
@@ -37,6 +39,21 @@ class CreateController: UIViewController {
         return lbv
     }()
     
+    
+    lazy var companyImageView: UIImageView = {
+        let imv = UIImageView()
+        imv.image = #imageLiteral(resourceName: "select_photo_empty")
+        imv.contentMode = .scaleAspectFit
+        imv.translatesAutoresizingMaskIntoConstraints = false
+        imv.isUserInteractionEnabled = true
+        imv.layer.cornerRadius = 16
+        imv.layer.masksToBounds = true
+        imv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectPhoto)))
+        return imv
+    }()
+    
+    
+    
     let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -57,7 +74,7 @@ class CreateController: UIViewController {
         let dp = UIDatePicker()
         dp.datePickerMode = UIDatePicker.Mode.date
         dp.translatesAutoresizingMaskIntoConstraints = false
-         return dp
+        return dp
     }()
     
     override func viewDidLoad() {
@@ -84,13 +101,23 @@ class CreateController: UIViewController {
         NSLayoutConstraint.activate([
             lightBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             lightBackgroundView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            lightBackgroundView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
-            lightBackgroundView.heightAnchor.constraint(equalToConstant: 250)
+            lightBackgroundView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            lightBackgroundView.heightAnchor.constraint(equalToConstant: 350)
             ])
+        
+        view.addSubview(companyImageView)
+        
+        NSLayoutConstraint.activate([
+            companyImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
+            companyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            companyImageView.widthAnchor.constraint(equalToConstant: 100),
+            companyImageView.heightAnchor.constraint(equalToConstant: 100)
+            ])
+        
         
         view.addSubview(nameLabel)
         NSLayoutConstraint.activate([
-            nameLabel.topAnchor.constraint(equalTo: view.topAnchor),
+            nameLabel.topAnchor.constraint(equalTo: companyImageView.bottomAnchor),
             nameLabel.widthAnchor.constraint(equalToConstant: 100),
             nameLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant:  20),
             nameLabel.heightAnchor.constraint(equalToConstant: 50)
@@ -104,7 +131,7 @@ class CreateController: UIViewController {
             nameTextField.heightAnchor.constraint(equalToConstant: 50)
             ])
         
-      view.addSubview(datePicker)
+        view.addSubview(datePicker)
         NSLayoutConstraint.activate([
             datePicker.topAnchor.constraint(equalTo:  nameLabel.bottomAnchor),
             datePicker.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -112,6 +139,13 @@ class CreateController: UIViewController {
             datePicker.bottomAnchor.constraint(equalTo: lightBackgroundView.bottomAnchor)
             ])
         
+    }
+    
+    @objc fileprivate func handleSelectPhoto(){
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
     
     @objc fileprivate func handleCancel(){
@@ -146,7 +180,7 @@ class CreateController: UIViewController {
     
     fileprivate func createCompany(){
         guard let name = self.nameTextField.text else { return }
-         let date = self.datePicker.date
+        let date = self.datePicker.date
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         company.setValue(name, forKey: "name")
@@ -162,4 +196,23 @@ class CreateController: UIViewController {
         }
     }
     
+}
+
+
+//MARK: ImagePickerController
+
+extension CreateController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let  editedImage = info [UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            companyImageView.image = editedImage
+        }else if let  originalPhoto = info [UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            companyImageView.image = originalPhoto
+        }
+        dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
 }
